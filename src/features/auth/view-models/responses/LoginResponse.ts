@@ -1,4 +1,3 @@
 export type LoginResponse = ({
-    AccessToken: string,
-    RefreshToken: string
+    AccessToken: string
 });
