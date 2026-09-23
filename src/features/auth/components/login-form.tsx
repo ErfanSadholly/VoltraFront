@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { LoginRequest } from "../view-models/requests/loginRequest";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../validation/login-schema";
-import { Login } from "../api/login";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
@@ -14,9 +13,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircleIcon } from "lucide-react";
 import { ApiError } from "@/lib/ApiError";
 import Link from "next/link";
+import { useContext } from "react";
+import { AuthContext } from "./AuthProvider";
 
 export function LoginForm() {
     const [apiError, setApiError] = useState("");
+    const { login } = useContext(AuthContext);
     const {
         register,
         handleSubmit,
@@ -24,12 +26,11 @@ export function LoginForm() {
     } = useForm<LoginRequest>({
         resolver: zodResolver(loginSchema)
     });
-
+    
     async function OnSubmit(data: LoginRequest) {
         setApiError("");
         try {
-            const response = await Login(data);
-            console.log(response);
+            await login(data);
         }
         catch (error) {
             if (error instanceof ApiError) {
@@ -37,7 +38,7 @@ export function LoginForm() {
             }
         }
     }
-
+    
     return (
 
         <Card className="w-full sm:max-w-md">
@@ -85,7 +86,7 @@ export function LoginForm() {
                         {apiError &&
                             <Alert variant="destructive" dir="auto">
                                 <AlertCircleIcon />
-                                <AlertTitle className="text-right">ورود به حساب کابری موفقیت آمیز نبود</AlertTitle>
+                                <AlertTitle className="text-right">ورود به حساب کاربری موفقیت آمیز نبود</AlertTitle>
                                 <AlertDescription className="text-right">
                                     {apiError}
                                 </AlertDescription>
@@ -95,7 +96,7 @@ export function LoginForm() {
 
                     <div className="flex justify-center mt-4">
                         <Button type="submit" disabled={isSubmitting}>
-                            {isSubmitting ? "در حال ورود..." : "ورود به حساب کابری"}
+                            {isSubmitting ? "در حال ورود..." : "ورود به حساب کاربری"}
                         </Button>
                     </div>
                     <div className="mt-2 text-center text-sm">
