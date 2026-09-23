@@ -1,0 +1,3 @@
+type RefreshTokenResponse = {
+    accessToken: string;
+}
