@@ -28,8 +28,7 @@ export function RegisterForm() {
     async function onSubmit(data: RegisterRequest) {
         setApiError("");
         try {
-            const res = await Register(data);
-            console.log(res);
+            await Register(data);
         } catch (error) {
             if (error instanceof ApiError)
                 if (error.code === "IsExistUser")
@@ -160,7 +159,7 @@ export function RegisterForm() {
                         <span className="ml-1">حساب کاربری از قبل دارید؟</span>
                         <Link href="/login" className="text-primary underline-offset-5 hover:underline">
                             ورود
-                        </Link> 
+                        </Link>
                     </div>
                 </form>
             </CardContent>

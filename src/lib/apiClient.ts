@@ -1,31 +1,48 @@
+import axios from "axios";
+import type { AxiosInstance } from "axios";
+import { useAuthStore } from "@/features/auth/store/auth-store";
+import createAuthRefreshInterceptor from "axios-auth-refresh";
+import { RefreshTokenResponse } from "@/features/auth/view-models/responses/RefreshTokenResponse";
 import { ApiError } from "./ApiError";
-import { getAccessToken } from "./auth-token";
 
 const API_URL = "http://localhost:5052/api/";
 
-export async function apiClient(
-    endpoint: string,
-    options?: RequestInit
-) {
-    const token = getAccessToken();
+export const apiClient: AxiosInstance = axios.create({
+    baseURL: API_URL,
+    timeout: 5000,
+    withCredentials: true,
+    headers: {
+        "Content-Type": "application/json"
+    }
+})
 
-    const headers = {
-        "Content-Type": "application/json",
-        ...(token && {
-            Authorization: `Bearer ${token}`,
-        }),
-        ...options?.headers,
-    };
+apiClient.interceptors.request.use(
+    (config) => {
+        const token = useAuthStore.getState().accessToken;
+        if (token)
+            config.headers.Authorization = `Bearer ${token}`;
 
-    const response = await fetch(`${API_URL}${endpoint}`, {
-        ...options,
-        credentials: "include",
-        headers
-    });
+        return config;
+    }
+);
 
-    const result = await response.json();
-    if (!response.ok || !result.success)
-        throw new ApiError(result.message, result.code);
+apiClient.interceptors.response.use(
+    (response) => {
+        const data = response.data;
+        if (data?.success === false)
+            throw new ApiError(data.message, data.code);
 
-    return result;
+        return response;
+    }
+)
+
+async function refreshAuthLogic(): Promise<RefreshTokenResponse> {
+
+    const res: RefreshTokenResponse = {
+        accessToken: (await axios.post(API_URL + "auth/refreshToken", {}, { withCredentials: true })).data.data.accessToken
+    }
+    useAuthStore.getState().setAccessToken(res.accessToken);
+    return res;
 }
+
+createAuthRefreshInterceptor(apiClient, refreshAuthLogic);

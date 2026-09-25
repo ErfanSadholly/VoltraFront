@@ -1,3 +1,3 @@
 export type LoginResponse = ({
-    AccessToken: string
+    accessToken: string
 });

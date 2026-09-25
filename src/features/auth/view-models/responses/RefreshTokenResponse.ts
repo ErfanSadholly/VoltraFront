@@ -1,3 +1,3 @@
-type RefreshTokenResponse = {
+export type RefreshTokenResponse = {
     accessToken: string;
 }

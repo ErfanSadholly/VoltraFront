@@ -13,12 +13,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircleIcon } from "lucide-react";
 import { ApiError } from "@/lib/ApiError";
 import Link from "next/link";
-import { useContext } from "react";
-import { AuthContext } from "./AuthProvider";
+import { Login } from "../api/login";
 
 export function LoginForm() {
     const [apiError, setApiError] = useState("");
-    const { login } = useContext(AuthContext);
     const {
         register,
         handleSubmit,
@@ -30,7 +28,7 @@ export function LoginForm() {
     async function OnSubmit(data: LoginRequest) {
         setApiError("");
         try {
-            await login(data);
+            await Login(data);
         }
         catch (error) {
             if (error instanceof ApiError) {
