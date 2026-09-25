@@ -4,13 +4,16 @@ import { Button } from "@/components/ui/button";
 import { LogOutIcon } from "@/components/icons/lucide-log-out";
 import { logout } from "@/features/auth/api/logout";
 import { ApiError } from "@/lib/ApiError";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
 
 
+    const router = useRouter();
     const handleClick = async () => {
         try {
             await logout();
+            router.push("/login");
         } catch (error) {
             if (error instanceof ApiError)
                 return error.message

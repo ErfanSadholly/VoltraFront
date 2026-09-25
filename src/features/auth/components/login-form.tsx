@@ -14,6 +14,7 @@ import { AlertCircleIcon } from "lucide-react";
 import { ApiError } from "@/lib/ApiError";
 import Link from "next/link";
 import { Login } from "../api/login";
+import { useRouter } from "next/navigation";
 
 export function LoginForm() {
     const [apiError, setApiError] = useState("");
@@ -24,11 +25,13 @@ export function LoginForm() {
     } = useForm<LoginRequest>({
         resolver: zodResolver(loginSchema)
     });
-    
+
+    const router = useRouter();
     async function OnSubmit(data: LoginRequest) {
         setApiError("");
         try {
             await Login(data);
+            router.push("/");
         }
         catch (error) {
             if (error instanceof ApiError) {
@@ -36,7 +39,7 @@ export function LoginForm() {
             }
         }
     }
-    
+
     return (
 
         <Card className="w-full sm:max-w-md">
