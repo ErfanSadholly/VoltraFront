@@ -1,13 +1,31 @@
-import { DataTable } from "@/components/shared/data-table/DataTable";
+"use client";
+
+import { useEffect, useState } from "react";
+import type { ColumnFiltersState } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/shared/data-table/data-table";
 import { GetAll } from "@/features/product/api/get-all";
 import { productColumns } from "@/features/product/components/product-columns";
+import type { ProductGetAllResponse } from "@/features/product/view-models/responses/ProductGetAllResponse";
+import { ProductSearch } from "@/features/product/search/product-search";
 
-export default async function ProductPage() {
-    const response = await GetAll({
-        pageNo: 1,
-        pageSize: 10
-    });
+export default function ProductPage() {
+    const [data, setData] = useState<ProductGetAllResponse[]>([]);
+
+    async function loadProducts(filters: ColumnFiltersState = []) {
+
+        const response = await GetAll({
+            pageNo: 1,
+            pageSize: 10,
+            ...ProductSearch(filters)
+        });
+
+        setData(response.data);
+    }
+
+    useEffect(() => {
+        loadProducts();
+    }, []);
 
     return (
         <div className="container mx-auto space-y-6 p-6">
@@ -17,29 +35,22 @@ export default async function ProductPage() {
                         محصولات
                     </h1>
 
-                    <p className="text-muted-foreground">
+                    <p className="text-muted-foregroun
+                    d">
                         مدیریت محصولات فروشگاه
                     </p>
                 </div>
-            </div>
 
-            <div className="flex items-center gap-2">
-                <Button variant="success" className="rounded-lg px-4 py-2 text-primary-foreground">
-                    Add
-                </Button>
 
-                <Button variant="warning" className="rounded-lg px-4 py-2 text-primary-foreground">
-                    Update
-                </Button>
-
-                <Button variant="danger" className="rounded-lg px-4 py-2 text-primary-foreground">
-                    Delete
+                <Button>
+                    افزودن محصول
                 </Button>
             </div>
 
             <DataTable
                 columns={productColumns}
-                data={response.data}
+                data={data}
+                onFilter={loadProducts}
             />
         </div>
     );
