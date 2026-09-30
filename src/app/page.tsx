@@ -9,6 +9,7 @@ import { ProductGetAllResponse } from "@/features/product/view-models/responses/
 import { useEffect, useState } from "react";
 import { GetAll } from "@/features/product/api/get-all";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export default function HomePage() {
 
@@ -42,9 +43,18 @@ export default function HomePage() {
             <div>
                 <h1 className="text-3xl">Voltra</h1>
                 <p>صفحه اصلی فروشگاه</p>
+
             </div>
-            <div className="absolute left-0 top-0">
-                <Button variant="ghost" size="icon" onClick={handleClick}><LogOutIcon className="size-8" /></Button>
+            <div className="absolute left-0 top-0 flex items-center gap-2">
+                <ModeToggle />
+
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleClick}
+                >
+                    <LogOutIcon className="size-8" />
+                </Button>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
