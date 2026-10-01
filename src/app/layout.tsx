@@ -8,7 +8,7 @@ import "@fontsource/vazirmatn/500.css";
 import "@fontsource/vazirmatn/600.css";
 import "@fontsource/vazirmatn/700.css";
 
-import { AuthProvider } from "@/features/auth/components/AuthProvider";
+import { AuthProvider } from "@/features/auth/components/auth-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({

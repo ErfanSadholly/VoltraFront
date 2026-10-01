@@ -1,6 +1,6 @@
-import { apiClient } from "@/lib/apiClient";
+import { apiClient } from "@/lib/api-client";
 import { ApiResponse } from "@/lib/types/api-response";
-import { ProductGetDetailsResponse } from "../view-models/responses/ProductGetDetailsResponse";
+import { ProductGetDetailsResponse } from "../view-models/responses/product-getDetail-response";
 
 export async function GetDetails(productId: number): Promise<ApiResponse<ProductGetDetailsResponse>> {
     console.log("URL:", `Product/GetDetails/${productId}`);

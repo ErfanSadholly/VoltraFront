@@ -2,8 +2,8 @@ import axios from "axios";
 import type { AxiosInstance } from "axios";
 import { useAuthStore } from "@/features/auth/store/auth-store";
 import createAuthRefreshInterceptor from "axios-auth-refresh";
-import { RefreshTokenResponse } from "@/features/auth/view-models/responses/RefreshTokenResponse";
-import { ApiError } from "./ApiError";
+import { RefreshTokenResponse } from "@/features/auth/view-models/responses/auth-refreshToken-response";
+import { ApiError } from "./api-error";
 
 const API_URL = "http://localhost:5052/api/";
 

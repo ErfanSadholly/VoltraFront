@@ -1,5 +1,5 @@
+import { AuthStatus } from "@/features/auth/components/auth-status";
 import { LoginForm } from "@/features/auth/components/login-form";
-import { AuthStatus } from "@/features/auth/components/AuthStatus";
 
 
 export default function LoginPage() {

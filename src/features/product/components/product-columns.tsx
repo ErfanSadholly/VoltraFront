@@ -7,8 +7,8 @@ import { TruncatedText } from "@/components/shared/TruncatedText";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
-import { getPersianDateTime } from "@/lib/date/getPersianDateTime";
-import type { ProductGetAllResponse } from "../view-models/responses/ProductGetAllResponse";
+import { getPersianDateTime } from "@/lib/date/get-persian-datetime";
+import type { ProductGetAllResponse } from "../view-models/responses/product-getAll_response";
 import { ColumnSearch } from "@/components/shared/data-table/column-search";
 import { ColumnDateFilter } from "@/components/shared/data-table/column-date-search";
 

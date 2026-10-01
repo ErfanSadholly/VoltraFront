@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { LoginRequest } from "../view-models/requests/loginRequest";
+import { LoginRequest } from "../view-models/requests/auth-login-request";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../validation/login-schema";
 import { useState } from "react";
@@ -11,10 +11,10 @@ import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircleIcon } from "lucide-react";
-import { ApiError } from "@/lib/ApiError";
+import { ApiError } from "@/lib/api-error";
 import Link from "next/link";
-import { Login } from "../api/login";
 import { useRouter } from "next/navigation";
+import { Login } from "../api/login";
 
 export function LoginForm() {
     const [apiError, setApiError] = useState("");

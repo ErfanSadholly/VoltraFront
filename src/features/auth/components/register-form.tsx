@@ -1,11 +1,10 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { RegisterRequest } from "../view-models/requests/registerRequest";
+import { RegisterRequest } from "../view-models/requests/auth-register-request";
 import { registerSchema } from "../validation/register-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Register } from "../api/register";
-import { ApiError } from "@/lib/ApiError";
+import { ApiError } from "@/lib/api-error";
 import { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Field, FieldLabel, FieldError } from "@/components/ui/field";
@@ -14,6 +13,7 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { AlertCircleIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Register } from "../api/register";
 
 export function RegisterForm() {
     const [apiError, setApiError] = useState("");

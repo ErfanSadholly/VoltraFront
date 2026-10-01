@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/shared/data-table/data-table";
 import { GetAll } from "@/features/product/api/get-all";
 import { productColumns } from "@/features/product/components/product-columns";
-import type { ProductGetAllResponse } from "@/features/product/view-models/responses/ProductGetAllResponse";
+import type { ProductGetAllResponse } from "@/features/product/view-models/responses/product-getAll_response";
 import { ProductSearch } from "@/features/product/search/product-search";
 
 export default function ProductPage() {

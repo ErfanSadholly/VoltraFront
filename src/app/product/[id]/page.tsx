@@ -1,5 +1,5 @@
 import { GetDetails } from "@/features/product/api/get-details";
-import { ApiError } from "@/lib/ApiError";
+import { ApiError } from "@/lib/api-error";
 
 type Props = {
     params: Promise<{

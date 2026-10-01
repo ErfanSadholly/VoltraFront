@@ -2,14 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { LogOutIcon } from "@/components/icons/lucide-log-out";
-import { logout } from "@/features/auth/api/logout";
-import { ApiError } from "@/lib/ApiError";
+import { ApiError } from "@/lib/api-error";
 import { useRouter } from "next/navigation";
-import { ProductGetAllResponse } from "@/features/product/view-models/responses/ProductGetAllResponse";
+import { ProductGetAllResponse } from "@/features/product/view-models/responses/product-getAll_response";
 import { useEffect, useState } from "react";
 import { GetAll } from "@/features/product/api/get-all";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ModeToggle } from "@/components/mode-toggle";
+import { logout } from "@/features/auth/api/logout";
 
 export default function HomePage() {
 

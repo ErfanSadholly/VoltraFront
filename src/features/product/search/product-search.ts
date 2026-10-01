@@ -1,6 +1,6 @@
 import type { ColumnFiltersState } from "@tanstack/react-table";
-import type { ProductGetAllRequest } from "../view-models/requests/ProductGetAllRequest";
-import { formatDateForApi } from "@/lib/date/formatDateForApi";
+import type { ProductGetAllRequest } from "../view-models/requests/product-getAll-request";
+import { formatDateForApi } from "@/lib/date/format-date-api";
 
 export function ProductSearch(
     filters: ColumnFiltersState
