@@ -33,8 +33,18 @@ apiClient.interceptors.response.use(
             throw new ApiError(data.message, data.code);
 
         return response;
+    },
+    
+    (error) => {
+        const data = error.response?.data;
+
+        if (data?.message) {
+            throw new ApiError(data.message, data.code);
+        }
+
+        throw error;
     }
-)
+);
 
 async function refreshAuthLogic(): Promise<RefreshTokenResponse> {
 
