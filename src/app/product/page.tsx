@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import type { ColumnFiltersState } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/shared/data-table/data-table";
 import { GetAll } from "@/features/product/api/get-all";
 import { productColumns } from "@/features/product/components/product-columns";
 import type { ProductGetAllResponse } from "@/features/product/view-models/responses/product-getAll_response";
 import { ProductSearch } from "@/features/product/search/product-search";
+import { ProductAddDialog } from "@/features/product/components/product-add-dialog";
 
 export default function ProductPage() {
     const [data, setData] = useState<ProductGetAllResponse[]>([]);
@@ -16,7 +16,7 @@ export default function ProductPage() {
 
         const response = await GetAll({
             pageNo: 1,
-            pageSize: 10,
+            pageSize: 25,
             ...ProductSearch(filters)
         });
 
@@ -41,10 +41,10 @@ export default function ProductPage() {
                     </p>
                 </div>
 
+                <ProductAddDialog
+                    onSuccess={loadProducts}
+                />
 
-                <Button>
-                    افزودن محصول
-                </Button>
             </div>
 
             <DataTable
