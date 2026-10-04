@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ProductForm } from "./product-add-form";
+import { AddForm } from "./product-add-form";
 
 type ProductAddDialogProps = {
     onSuccess: () => void;
@@ -34,7 +34,7 @@ export function ProductAddDialog({
                     </DialogDescription>
                 </DialogHeader>
 
-                <ProductForm
+                <AddForm
                     onSuccess={() => {
                         setOpen(false);
                         onSuccess();

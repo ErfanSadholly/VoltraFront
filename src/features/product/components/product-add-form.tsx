@@ -2,10 +2,10 @@
 
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createSchema, type ProductFormValues, } from "../validation/add-schema";
+import { createSchema, type ProductAddFormValues, } from "../validation/add-schema";
 import { ApiError } from "@/lib/api-error";
 import { Add } from "../api/add";
-import { GetIdTitle } from "@/features/brand/api/get-idTitle";
+import { BrandGetIdTitle } from "@/features/brand/api/get-idTitle";
 import { Button } from "@/components/ui/button";
 import { FormCombobox } from "@/components/shared/form/form-combobox";
 import { FormInput } from "@/components/shared/form/form-input";
@@ -18,8 +18,8 @@ type ProductFormProps = {
     onSuccess: () => void;
 };
 
-export function ProductForm({ onSuccess }: ProductFormProps) {
-    const form = useForm<ProductFormValues>({
+export function AddForm({ onSuccess }: ProductFormProps) {
+    const form = useForm<ProductAddFormValues>({
         resolver: zodResolver(createSchema),
         defaultValues: {
             name: "",
@@ -30,7 +30,7 @@ export function ProductForm({ onSuccess }: ProductFormProps) {
     });
     const { formState: { isSubmitting } } = form;
 
-    async function onSubmit(values: ProductFormValues) {
+    async function onSubmit(values: ProductAddFormValues) {
         try {
             await Add(values);
             onSuccess();
@@ -59,7 +59,7 @@ export function ProductForm({ onSuccess }: ProductFormProps) {
                     <FormCombobox
                         name="brandId"
                         label="برند"
-                        query={GetIdTitle}
+                        query={BrandGetIdTitle}
                     />
 
                     <FormTextarea

@@ -14,6 +14,6 @@ export const createSchema = z.object({
     brandId: z
         .number()
         .nullable(),
-    });
-    
-    export type ProductFormValues = z.infer<typeof createSchema>;
+});
+
+export type ProductAddFormValues = z.infer<typeof createSchema>;
