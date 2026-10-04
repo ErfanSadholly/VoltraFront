@@ -38,7 +38,7 @@ export function TruncatedText({
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle className="text-left">توضیحات</DialogTitle>
+                        <DialogTitle className="text-right">توضیحات</DialogTitle>
                     </DialogHeader>
 
                     <p className="whitespace-pre-wrap">
