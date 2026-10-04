@@ -17,6 +17,18 @@ export function ProductSearch(
         (filter) => filter.id === "modifiedOn"
     )?.value;
 
+    const brand = filters.find(
+        (filter) => filter.id === "brandId"
+    )?.value;
+
+    const cretedBy = filters.find(
+        (filter) => filter.id === "createdBy"
+    )?.value;
+
+    const modifiedBy = filters.find(
+        (filter) => filter.id === "modifiedBy"
+    )?.value;
+
     return {
         name: typeof name === "string"
             ? name
@@ -29,5 +41,17 @@ export function ProductSearch(
         modifiedOn: modifiedOn instanceof Date
             ? formatDateForApi(modifiedOn)
             : undefined,
+
+        brandId: typeof brand === "number"
+            ? brand
+            : undefined,
+
+        createdBy: typeof cretedBy === "number"
+            ? cretedBy
+            : undefined,
+
+        modifiedBy: typeof modifiedBy === "number"
+            ? modifiedBy
+            : undefined
     };
 }

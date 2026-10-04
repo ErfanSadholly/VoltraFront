@@ -9,7 +9,7 @@ type ColumnDateFilterProps = {
     column: any;
 };
 
-export function ColumnDateFilter({
+export function ColumnDateSearch({
     column,
 }: ColumnDateFilterProps) {
     const value = column.getFilterValue() as Date | undefined;
