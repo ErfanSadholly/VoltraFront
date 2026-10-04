@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CalendarIcon } from "lucide-react"
+import { CalendarIcon, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger, } from "@/components/ui/popover"
@@ -19,6 +19,10 @@ export function PersianDatePicker({
 }: PersianDatePickerProps) {
   const [open, setOpen] = React.useState(false)
 
+  function handleClear() {
+    onChange?.(undefined)
+  }
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
@@ -35,7 +39,33 @@ export function PersianDatePicker({
             : placeholder}
         </span>
 
-        <CalendarIcon className="size-4" />
+
+
+        <div className="flex items-center gap-1">
+          {value && (
+            <span
+              role="button"
+              tabIndex={0}
+              className="flex size-5 items-center justify-center rounded-sm hover:bg-muted"
+              onClick={(event) => {
+                event.preventDefault()
+                event.stopPropagation()
+                handleClear()
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault()
+                  event.stopPropagation()
+                  handleClear()
+                }
+              }}
+            >
+              <X className="size-3.5" />
+            </span>
+          )}
+
+          <CalendarIcon className="size-4" />
+        </div>
       </PopoverTrigger>
 
       <PopoverContent
