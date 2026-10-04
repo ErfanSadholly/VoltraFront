@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ColumnFiltersState } from "@tanstack/react-table";
 import { DataTable } from "@/components/shared/data-table/data-table";
 import { GetAll } from "@/features/product/api/get-all";
@@ -8,6 +8,7 @@ import { productColumns } from "@/features/product/components/product-columns";
 import type { ProductGetAllResponse } from "@/features/product/view-models/responses/product-getAll_response";
 import { ProductSearch } from "@/features/product/search/product-search";
 import { ProductAddDialog } from "@/features/product/components/product-add-dialog";
+import { ProductEditDialog } from "@/features/product/components/product-update-dialog";
 
 export default function ProductPage() {
     const [data, setData] = useState<ProductGetAllResponse[]>([]);
@@ -27,6 +28,17 @@ export default function ProductPage() {
         loadProducts();
     }, []);
 
+    const [selectedProductId, setSelectedProductId] =
+        useState<number | null>(null);
+
+    const columns = useMemo(
+        () =>
+            productColumns((productId) => {
+                setSelectedProductId(productId);
+            }),
+        []
+    );
+
     return (
         <div className="container mx-auto space-y-6 p-6">
             <div className="flex items-center justify-between">
@@ -35,8 +47,7 @@ export default function ProductPage() {
                         محصولات
                     </h1>
 
-                    <p className="text-muted-foregroun
-                    d">
+                    <p className="text-muted-foreground">
                         مدیریت محصولات فروشگاه
                     </p>
                 </div>
@@ -45,10 +56,15 @@ export default function ProductPage() {
                     onSuccess={loadProducts}
                 />
 
+                <ProductEditDialog
+                    onSuccess={loadProducts}
+                    productId={selectedProductId}
+                    onClose={() => setSelectedProductId(null)}
+                />
             </div>
 
             <DataTable
-                columns={productColumns}
+                columns={columns}
                 data={data}
                 onFilter={loadProducts}
             />
