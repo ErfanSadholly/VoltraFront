@@ -1,8 +1,9 @@
+"use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
-import { updateSchema, ProductUpdateFormValues } from "../validation/update-schema";
+import { updateSchema, ProductUpdateFormValues, } from "../validation/update-schema";
 import { ProductGetByIdResponse } from "../view-models/responses/product-getById-response";
-import { Update } from "../api/update";
 import { toast } from "sonner";
 import { ApiError } from "@/lib/api-error";
 import { FormLayout } from "@/components/shared/form/form-layout";
@@ -12,6 +13,7 @@ import { FormTextarea } from "@/components/shared/form/form-textarea";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { BrandGetIdTitle } from "@/features/brand/api/get-idTitle";
+import { useProductUpdate } from "../hooks/use-product-update";
 
 type ProductFormProps = {
     onSuccess: () => void;
@@ -26,11 +28,10 @@ export function UpdateForm({ onSuccess, product }: ProductFormProps) {
             description: product.description,
             brandId: product.brandId,
         },
-
     });
 
-    const { formState: { isSubmitting } } = form;
-    const { isDirty } = form.formState;
+    const { isSubmitting, isDirty } = form.formState;
+    const { mutateAsync } = useProductUpdate();
 
     async function onSubmit(values: ProductUpdateFormValues) {
         try {
@@ -38,24 +39,26 @@ export function UpdateForm({ onSuccess, product }: ProductFormProps) {
                 onSuccess();
                 return;
             }
-            await Update(product.id, values);
+
+            await mutateAsync({
+                productId: product.id,
+                values,
+            });
             onSuccess();
-            toast.success("مجصول با موفقیت ویرایش شد");
+            toast.success("محصول با موفقیت ویرایش شد");
         } catch (error) {
             if (error instanceof ApiError) {
-                return toast.error(error.message);
+                toast.error(error.message);
+                return;
             }
-            else {
-                return toast.error("خطایی در ویرایش محصول رخ داد")
-            }
+
+            toast.error("خطایی در ویرایش محصول رخ داد");
         }
     }
-
 
     return (
         <FormProvider {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-
                 <FormLayout>
                     <FormInput
                         name="name"
@@ -76,7 +79,6 @@ export function UpdateForm({ onSuccess, product }: ProductFormProps) {
                     />
                 </FormLayout>
 
-
                 <div className="flex justify-start mt-4">
                     <Button type="submit" disabled={isSubmitting}>
                         {isSubmitting ? (
@@ -89,7 +91,7 @@ export function UpdateForm({ onSuccess, product }: ProductFormProps) {
                         )}
                     </Button>
                 </div>
-            </form >
-        </FormProvider >
-    )
+            </form>
+        </FormProvider>
+    );
 }

@@ -1,46 +1,27 @@
 "use client";
 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, } from "@/components/ui/dialog";
-import { useEffect, useState } from "react";
-import { GetById } from "../api/get-by-id";
 import { UpdateForm } from "./product-update-form";
-import { ProductGetByIdResponse } from "../view-models/responses/product-getById-response";
+import { useProductGetById } from "../hooks/use-product-get-by-id";
+import { ApiError } from "@/lib/api-error";
 
 type ProductEditDialogProps = {
     productId: number | null;
-    onSuccess: () => void;
     onClose: () => void;
 };
 
 export function ProductEditDialog({
     productId,
-    onSuccess,
     onClose,
 }: ProductEditDialogProps) {
-    const [loading, setLoading] = useState(false);
-    const [product, setProduct] = useState<ProductGetByIdResponse | null>(null);
+    const {
+        data,
+        isLoading,
+        isError,
+        error,
+    } = useProductGetById(productId);
 
-    useEffect(() => {
-        if (productId === null) {
-            setProduct(null);
-            return;
-        }
-        const id = productId;
-
-        async function loadProduct() {
-            try {
-
-                setLoading(true);
-                const response = (await GetById(id));
-
-                setProduct(response.data);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        loadProduct();
-    }, [productId]);
+    const product = data?.data;
 
     return (
         <Dialog
@@ -62,13 +43,24 @@ export function ProductEditDialog({
                     </DialogDescription>
                 </DialogHeader>
 
+                {isLoading && (
+                    <div className="flex justify-center py-6">
+                        در حال دریافت اطلاعات محصول...
+                    </div>
+                )}
+
+                {isError && (
+                    <div className="py-6 text-center text-destructive">
+                        {error instanceof ApiError
+                            ? error.message
+                            : "خطایی در دریافت اطلاعات محصول رخ داد"}
+                    </div>
+                )}
+
                 {product && (
                     <UpdateForm
                         product={product}
-                        onSuccess={() => {
-                            onClose();
-                            onSuccess();
-                        }}
+                        onSuccess={onClose}
                     />
                 )}
             </DialogContent>
