@@ -1,35 +1,19 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { ColumnFiltersState } from "@tanstack/react-table";
 import { DataTable } from "@/components/shared/data-table/data-table";
-import { GetAll } from "@/features/product/api/get-all";
+import { useProductGetAll } from "@/features/product/hooks/use-product-get-all";
 import { productColumns } from "@/features/product/components/product-columns";
-import type { ProductGetAllResponse } from "@/features/product/view-models/responses/product-getAll_response";
-import { ProductSearch } from "@/features/product/search/product-search";
 import { ProductAddDialog } from "@/features/product/components/product-add-dialog";
 import { ProductEditDialog } from "@/features/product/components/product-update-dialog";
 
 export default function ProductPage() {
-    const [data, setData] = useState<ProductGetAllResponse[]>([]);
-
-    async function loadProducts(filters: ColumnFiltersState = []) {
-
-        const response = await GetAll({
-            pageNo: 1,
-            pageSize: 25,
-            ...ProductSearch(filters)
-        });
-
-        setData(response.data);
-    }
-
-    useEffect(() => {
-        loadProducts();
-    }, []);
-
+    const [filters, setFilters] = useState<ColumnFiltersState>([]);
     const [selectedProductId, setSelectedProductId] =
         useState<number | null>(null);
+
+    const { data } = useProductGetAll(filters);
 
     const columns = useMemo(
         () =>
@@ -52,12 +36,9 @@ export default function ProductPage() {
                     </p>
                 </div>
 
-                <ProductAddDialog
-                    onSuccess={loadProducts}
-                />
+                <ProductAddDialog />
 
                 <ProductEditDialog
-                    onSuccess={loadProducts}
                     productId={selectedProductId}
                     onClose={() => setSelectedProductId(null)}
                 />
@@ -65,8 +46,8 @@ export default function ProductPage() {
 
             <DataTable
                 columns={columns}
-                data={data}
-                onFilter={loadProducts}
+                data={data?.data ?? []}
+                onFilter={setFilters}
             />
         </div>
     );
