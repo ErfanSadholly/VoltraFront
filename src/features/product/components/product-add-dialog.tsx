@@ -5,13 +5,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Button } from "@/components/ui/button";
 import { AddForm } from "./product-add-form";
 
-type ProductAddDialogProps = {
-    onSuccess: () => void;
-};
 
-export function ProductAddDialog({
-    onSuccess,
-}: ProductAddDialogProps) {
+export function ProductAddDialog() {
     const [open, setOpen] = useState(false);
 
     return (
@@ -37,7 +32,6 @@ export function ProductAddDialog({
                 <AddForm
                     onSuccess={() => {
                         setOpen(false);
-                        onSuccess();
                     }}
                 />
             </DialogContent>

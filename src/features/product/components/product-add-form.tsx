@@ -4,7 +4,6 @@ import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createSchema, type ProductAddFormValues, } from "../validation/add-schema";
 import { ApiError } from "@/lib/api-error";
-import { Add } from "../api/add";
 import { BrandGetIdTitle } from "@/features/brand/api/get-idTitle";
 import { Button } from "@/components/ui/button";
 import { FormCombobox } from "@/components/shared/form/form-combobox";
@@ -13,6 +12,7 @@ import { FormTextarea } from "@/components/shared/form/form-textarea";
 import { FormLayout } from "@/components/shared/form/form-layout";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
+import { useProductAdd } from "../hooks/use-product-add";
 
 type ProductFormProps = {
     onSuccess: () => void;
@@ -28,20 +28,20 @@ export function AddForm({ onSuccess }: ProductFormProps) {
         },
 
     });
-    const { formState: { isSubmitting } } = form;
+    const { isSubmitting } = form.formState;
+    const { mutateAsync } = useProductAdd();
 
     async function onSubmit(values: ProductAddFormValues) {
         try {
-            await Add(values);
+            await mutateAsync(values);
             onSuccess();
             toast.success("محصول با موفقیت اضافه شد");
         } catch (error) {
             if (error instanceof ApiError) {
                 return toast.error(error.message);
             }
-            else {
-                toast.error("خطایی در ثبت محصول رخ داد");
-            }
+            
+            toast.error("خطایی در ثبت محصول رخ داد");
         }
     }
 
