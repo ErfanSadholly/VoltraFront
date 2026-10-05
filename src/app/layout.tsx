@@ -11,6 +11,7 @@ import "@fontsource/vazirmatn/700.css";
 import { AuthProvider } from "@/features/auth/components/auth-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { QueryProvider } from "@/components/providers/query-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,12 +46,14 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AuthProvider>
-            {children}
-          </AuthProvider>
+          <QueryProvider>
+            <AuthProvider>
+              {children}
+            </AuthProvider>
+          </QueryProvider>
           <Toaster />
         </ThemeProvider>
-      </body>
-    </html>
+      </body >
+    </html >
   );
 }
