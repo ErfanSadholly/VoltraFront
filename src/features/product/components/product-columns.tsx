@@ -71,7 +71,7 @@ export function productColumns(
         columnHelper.accessor("brandName", {
             id: "brandId",
             header: ({ column }) => (
-                <div className="flex items-center justify-rightf gap-1">
+                <div className="flex items-center gap-1">
                     <span>برند</span>
 
                     <ColumnComboSearch
@@ -102,7 +102,6 @@ export function productColumns(
         }),
 
         columnHelper.accessor("createdBy", {
-            id: "createdBy",
             header: ({ column }) => (
                 <div className="text-center">
                     ثبت کننده
@@ -137,7 +136,6 @@ export function productColumns(
         }),
 
         columnHelper.accessor("modifiedBy", {
-            id: "modifiedBy",
             header: ({ column }) => (
                 <div className="text-center">
                     ویرایش کننده
