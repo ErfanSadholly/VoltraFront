@@ -5,16 +5,25 @@ import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger, } from "@/components/ui/popover";
+import { tableFeaturesConfig } from "./table-features";
+import type { Column, RowData } from "@tanstack/react-table";
 
-type ColumnSearchProps = {
-    column: any;
+type ColumnSearchProps<TData extends RowData, TValue = unknown> = {
+    column: Column<
+        typeof tableFeaturesConfig,
+        TData,
+        TValue
+    >;
     placeholder?: string;
 };
 
-export function ColumnSearch({
+export function ColumnSearch<
+    TData extends RowData,
+    TValue = unknown
+>({
     column,
     placeholder = "جستجو...",
-}: ColumnSearchProps) {
+}: ColumnSearchProps<TData, TValue>) {
     const [value, setValue] = useState(
         (column.getFilterValue() ?? "") as string
     );
