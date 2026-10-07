@@ -1,4 +1,4 @@
-import {columnFilteringFeature,columnPinningFeature,columnSizingFeature,filterFn_includesString,tableFeatures,} from "@tanstack/react-table";
+import { columnFilteringFeature, columnPinningFeature, columnSizingFeature, filterFn_includesString, tableFeatures, } from "@tanstack/react-table";
 
 export const tableFeaturesConfig = tableFeatures({
     columnFilteringFeature,

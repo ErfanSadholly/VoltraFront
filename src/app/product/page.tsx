@@ -16,7 +16,7 @@ export default function ProductPage() {
     const [selectedProductId, setSelectedProductId] =
         useState<number | null>(null);
 
-    const { data } = useProductGetAll(filters, pageNo, pageSize);
+    const { data, isError, isLoading, refetch } = useProductGetAll(filters, pageNo, pageSize);
 
     const columns = useMemo(
         () =>
@@ -58,8 +58,11 @@ export default function ProductPage() {
                 onPageSizeChange={setPageSize}
                 pinnedColumns={{
                     start: [],
-                    end:["actions"]
+                    end: ["actions"]
                 }}
+                isLoading={isLoading}
+                isError={isError}
+                onRetry={refetch}
             />
         </div>
     );

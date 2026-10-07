@@ -6,6 +6,11 @@ import { tableFeaturesConfig } from "./table-features";
 import { useState, type CSSProperties } from "react";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription } from "@/components/ui/empty";
+import { AlertCircle, PackageOpen, RefreshCw } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 
 
 type DataTableProps<TData extends object> = {
@@ -18,9 +23,24 @@ type DataTableProps<TData extends object> = {
     onFilter?: (filters: ColumnFiltersState) => void;
     onPageSizeChange: (pageSize: number) => void;
     pinnedColumns?: ColumnPinningState;
+    isLoading?: boolean;
+    isError?: boolean;
+    onRetry?: () => void;
 };
 
-export function DataTable<TData extends object>({ columns, data, totalCount, pageNo, pageSize, onPageChange, onPageSizeChange, onFilter, pinnedColumns }: DataTableProps<TData>) {
+export function DataTable<TData extends object>
+    ({ columns,
+        data,
+        totalCount,
+        pageNo,
+        pageSize,
+        onPageChange,
+        onPageSizeChange,
+        onFilter,
+        pinnedColumns,
+        isLoading,
+        isError,
+        onRetry }: DataTableProps<TData>) {
     const [columnFilters, setColumnFilters] =
         useState<ColumnFiltersState>([]);
 
@@ -87,15 +107,85 @@ export function DataTable<TData extends object>({ columns, data, totalCount, pag
                 </TableHeader>
 
                 <TableBody>
-                    {table.getRowModel().rows.map((row) => (
-                        <TableRow key={row.id}>
-                            {row.getAllCells().map((cell) => (
-                                <TableCell key={cell.id} style={getCommonPinningStyles(cell.column)}>
-                                    <table.FlexRender cell={cell} />
+                    {isLoading ? (
+                        Array.from({ length: pageSize }).map((_, rowIndex) => (
+                            <TableRow key={rowIndex}>
+                                {columns.map((column, columnIndex) => (
+                                    <TableCell key={columnIndex}>
+                                        <Skeleton
+                                            className={
+                                                columnIndex === 0
+                                                    ? "h-5 w-40"
+                                                    : columnIndex === columns.length - 1
+                                                        ? "mx-auto h-8 w-20"
+                                                        : "h-5 w-full"
+                                            }
+                                        />
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        ))) : isError ? (
+                            <TableRow>
+                                <TableCell colSpan={columns.length}>
+                                    <div className="flex min-h-40 items-center justify-center p-4">
+                                        <Alert className="max-w-md">
+                                            <AlertCircle />
+                                            <AlertTitle className="text-right">
+                                                دریافت اطلاعات با مشکل مواجه شد
+                                            </AlertTitle>
+
+                                            <AlertDescription className="flex items-center justify-between gap-4">
+                                                <span>
+                                                    لطفاً دوباره تلاش کنید.
+                                                </span>
+
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={onRetry}
+                                                >
+                                                    <RefreshCw />
+                                                    تلاش مجدد
+                                                </Button>
+                                            </AlertDescription>
+                                        </Alert>
+                                    </div>
                                 </TableCell>
-                            ))}
-                        </TableRow>
-                    ))}
+                            </TableRow>
+                        ) : data.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={columns.length}>
+                                    <Empty className="border-0">
+                                        <EmptyHeader>
+                                            <EmptyMedia variant="icon">
+                                                <PackageOpen />
+                                            </EmptyMedia>
+
+                                            <EmptyTitle>
+                                                محصولی پیدا نشد
+                                            </EmptyTitle>
+
+                                            <EmptyDescription>
+                                                هنوز محصولی برای نمایش وجود ندارد.
+                                            </EmptyDescription>
+                                        </EmptyHeader>
+                                    </Empty>
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                        table.getRowModel().rows.map((row) => (
+                            <TableRow key={row.id}>
+                                {row.getAllCells().map((cell) => (
+                                    <TableCell
+                                        key={cell.id}
+                                        style={getCommonPinningStyles(cell.column)}
+                                    >
+                                        <table.FlexRender cell={cell} />
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        ))
+                    )}
                 </TableBody>
             </Table>
 
