@@ -1,9 +1,9 @@
 "use client";
 
-import { useTable, type ColumnDef, type ColumnFiltersState, } from "@tanstack/react-table";
+import { ColumnPinningState, useTable, type ColumnDef, type ColumnFiltersState, } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
 import { tableFeaturesConfig } from "./table-features";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -17,11 +17,31 @@ type DataTableProps<TData extends object> = {
     onPageChange: (pageNo: number) => void;
     onFilter?: (filters: ColumnFiltersState) => void;
     onPageSizeChange: (pageSize: number) => void;
+    pinnedColumns?: ColumnPinningState;
 };
 
-export function DataTable<TData extends object>({ columns, data, totalCount, pageNo, pageSize, onPageChange, onPageSizeChange, onFilter }: DataTableProps<TData>) {
+export function DataTable<TData extends object>({ columns, data, totalCount, pageNo, pageSize, onPageChange, onPageSizeChange, onFilter, pinnedColumns }: DataTableProps<TData>) {
     const [columnFilters, setColumnFilters] =
         useState<ColumnFiltersState>([]);
+
+    const getCommonPinningStyles = (column: any): CSSProperties => {
+        const isPinned = column.getIsPinned();
+
+        return {
+            position: isPinned ? "sticky" : "relative",
+            insetInlineStart:
+                isPinned === "start"
+                    ? `${column.getStart("start")}px`
+                    : undefined,
+            insetInlineEnd:
+                isPinned === "end"
+                    ? `${column.getAfter("end")}px`
+                    : undefined,
+            width: column.getSize(),
+            zIndex: isPinned ? 1 : 0,
+            background: isPinned ? "var(--background)" : undefined,
+        };
+    };
 
     const table = useTable({
         features: tableFeaturesConfig,
@@ -31,6 +51,13 @@ export function DataTable<TData extends object>({ columns, data, totalCount, pag
         state: {
             columnFilters,
         },
+        initialState: {
+            columnPinning: pinnedColumns ?? {
+                start: [],
+                end: [],
+            },
+        },
+
         onColumnFiltersChange: (updater) => {
             const nextFilters =
                 typeof updater === "function"
@@ -49,7 +76,7 @@ export function DataTable<TData extends object>({ columns, data, totalCount, pag
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id} className="h-12">
                             {headerGroup.headers.map((header) => (
-                                <TableHead key={header.id} className="h-10">
+                                <TableHead key={header.id} className="h-10" style={getCommonPinningStyles(header.column)}>
                                     {header.isPlaceholder
                                         ? null
                                         : <table.FlexRender header={header} />}
@@ -63,7 +90,7 @@ export function DataTable<TData extends object>({ columns, data, totalCount, pag
                     {table.getRowModel().rows.map((row) => (
                         <TableRow key={row.id}>
                             {row.getAllCells().map((cell) => (
-                                <TableCell key={cell.id}>
+                                <TableCell key={cell.id} style={getCommonPinningStyles(cell.column)}>
                                     <table.FlexRender cell={cell} />
                                 </TableCell>
                             ))}

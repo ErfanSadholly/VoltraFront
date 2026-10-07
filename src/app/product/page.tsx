@@ -56,6 +56,10 @@ export default function ProductPage() {
                 totalCount={data?.totalCount ?? 0}
                 onPageChange={setPageNo}
                 onPageSizeChange={setPageSize}
+                pinnedColumns={{
+                    start: [],
+                    end:["actions"]
+                }}
             />
         </div>
     );
