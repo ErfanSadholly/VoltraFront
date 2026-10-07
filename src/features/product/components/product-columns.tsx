@@ -177,6 +177,9 @@ export function productColumns(
                     عملیات
                 </div>
             ),
+            meta: {
+                position: "right"
+            },
             cell: ({ row }) => (
                 <div className="flex items-center justify-center gap-1">
                     <Button

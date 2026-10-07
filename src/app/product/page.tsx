@@ -10,10 +10,13 @@ import { ProductEditDialog } from "@/features/product/components/product-update-
 
 export default function ProductPage() {
     const [filters, setFilters] = useState<ColumnFiltersState>([]);
+    const [pageNo, setPageNo] = useState(1);
+    const [pageSize, setPageSize] = useState(25);
+
     const [selectedProductId, setSelectedProductId] =
         useState<number | null>(null);
 
-    const { data } = useProductGetAll(filters);
+    const { data } = useProductGetAll(filters, pageNo, pageSize);
 
     const columns = useMemo(
         () =>
@@ -48,6 +51,11 @@ export default function ProductPage() {
                 columns={columns}
                 data={data?.data ?? []}
                 onFilter={setFilters}
+                pageNo={pageNo}
+                pageSize={pageSize}
+                totalCount={data?.totalCount ?? 0}
+                onPageChange={setPageNo}
+                onPageSizeChange={setPageSize}
             />
         </div>
     );

@@ -7,11 +7,13 @@ import { GetAll } from "../api/get-all";
 import { ProductSearch } from "../search/product-search";
 
 export function useProductGetAll(
-    filters: ColumnFiltersState = []
+    filters: ColumnFiltersState = [],
+    pageNo = 1,
+    pageSize = 25
 ) {
     const request = {
-        pageNo: 1,
-        pageSize: 25,
+        pageNo,
+        pageSize,
         ...ProductSearch(filters),
     };
 
