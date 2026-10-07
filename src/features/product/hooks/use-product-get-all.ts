@@ -9,12 +9,16 @@ import { ProductSearch } from "../search/product-search";
 export function useProductGetAll(
     filters: ColumnFiltersState = [],
     pageNo = 1,
-    pageSize = 25
+    pageSize = 25,
+    sortBy?: string,
+    desc?: boolean,
 ) {
     const request = {
         pageNo,
         pageSize,
         ...ProductSearch(filters),
+        sortBy,
+        desc,
     };
 
     return useQuery({

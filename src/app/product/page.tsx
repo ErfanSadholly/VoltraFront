@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { ColumnFiltersState } from "@tanstack/react-table";
+import type { ColumnFiltersState, SortingState } from "@tanstack/react-table";
 import { DataTable } from "@/components/shared/data-table/data-table";
 import { useProductGetAll } from "@/features/product/hooks/use-product-get-all";
 import { productColumns } from "@/features/product/components/product-columns";
@@ -12,11 +12,14 @@ export default function ProductPage() {
     const [filters, setFilters] = useState<ColumnFiltersState>([]);
     const [pageNo, setPageNo] = useState(1);
     const [pageSize, setPageSize] = useState(25);
+    const [sorting, setSorting] = useState<SortingState>([]);
 
     const [selectedProductId, setSelectedProductId] =
         useState<number | null>(null);
+    const sortBy = sorting[0]?.id;
+    const desc = sorting[0]?.desc ?? false;
 
-    const { data, isError, isLoading, refetch } = useProductGetAll(filters, pageNo, pageSize);
+    const { data, isError, isLoading, refetch } = useProductGetAll(filters, pageNo, pageSize, sortBy, desc);
 
     const columns = useMemo(
         () =>
@@ -63,6 +66,7 @@ export default function ProductPage() {
                 isLoading={isLoading}
                 isError={isError}
                 onRetry={refetch}
+                onSortingChange={setSorting}
             />
         </div>
     );

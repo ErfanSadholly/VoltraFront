@@ -14,6 +14,7 @@ import { BrandGetIdTitle } from "@/features/brand/api/get-idTitle";
 import { ColumnDateSearch } from "@/components/shared/data-table/column-date-search";
 import { ColumnComboSearch } from "@/components/shared/data-table/column-combo-search";
 import { UserGetIdTitle } from "@/features/user/api/get-idTitle";
+import { DataTableColumnHeader } from "@/components/shared/data-table/data-table-column-header";
 
 const columnHelper =
     createColumnHelper<typeof tableFeaturesConfig, ProductGetAllResponse>();
@@ -23,9 +24,13 @@ export function productColumns(
 ) {
     return columnHelper.columns([
         columnHelper.accessor("name", {
+            enableSorting: true,
             header: ({ column }) => (
                 <div className="flex items-center justify-center gap-1">
-                    <span>نام محصول</span>
+                    <DataTableColumnHeader
+                        column={column}
+                        title="نام محصول"
+                    />
 
                     <ColumnSearch
                         column={column}
@@ -69,10 +74,14 @@ export function productColumns(
         }),
 
         columnHelper.accessor("brandName", {
+            enableSorting: true,
             id: "brandId",
             header: ({ column }) => (
                 <div className="flex items-center gap-1">
-                    <span>برند</span>
+                    <DataTableColumnHeader
+                        column={column}
+                        title="برند"
+                    />
 
                     <ColumnComboSearch
                         column={column}
@@ -89,9 +98,13 @@ export function productColumns(
         }),
 
         columnHelper.accessor("isActive", {
-            header: () => (
+            enableSorting: true,
+            header: ({ column }) => (
                 <div className="text-center">
-                    برای فروش فعال است؟
+                    <DataTableColumnHeader
+                        column={column}
+                        title="برای فروش فعال است؟"
+                    />
                 </div>
             ),
             cell: ({ getValue }) => (
@@ -121,9 +134,13 @@ export function productColumns(
         }),
 
         columnHelper.accessor("createdOn", {
+            enableSorting: true,
             header: ({ column }) => (
                 <div className="flex items-center justify-center gap-1">
-                    <span>زمان ثبت</span>
+                    <DataTableColumnHeader
+                        column={column}
+                        title="زمان ثبت"
+                    />
 
                     <ColumnDateSearch column={column} />
                 </div>
@@ -156,9 +173,15 @@ export function productColumns(
         }),
 
         columnHelper.accessor("modifiedOn", {
+            enableSorting: true,
+            sortDescFirst: true,
+
             header: ({ column }) => (
                 <div className="flex items-center justify-center gap-1">
-                    <span>زمان ویرایش</span>
+                    <DataTableColumnHeader
+                        column={column}
+                        title="زمان ویرایش"
+                    />
 
                     <ColumnDateSearch column={column} />
                 </div>

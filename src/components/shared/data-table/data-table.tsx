@@ -1,6 +1,6 @@
 "use client";
 
-import { ColumnPinningState, useTable, type ColumnDef, type ColumnFiltersState, } from "@tanstack/react-table";
+import { ColumnPinningState, SortingState, useTable, type ColumnDef, type ColumnFiltersState, } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
 import { tableFeaturesConfig } from "./table-features";
 import { useState, type CSSProperties } from "react";
@@ -26,6 +26,7 @@ type DataTableProps<TData extends object> = {
     isLoading?: boolean;
     isError?: boolean;
     onRetry?: () => void;
+    onSortingChange?: (sorting: SortingState) => void;
 };
 
 export function DataTable<TData extends object>
@@ -40,9 +41,11 @@ export function DataTable<TData extends object>
         pinnedColumns,
         isLoading,
         isError,
-        onRetry }: DataTableProps<TData>) {
+        onRetry,
+        onSortingChange }: DataTableProps<TData>) {
     const [columnFilters, setColumnFilters] =
         useState<ColumnFiltersState>([]);
+    const [sorting, setSorting] = useState<SortingState>([]);
 
     const getCommonPinningStyles = (column: any): CSSProperties => {
         const isPinned = column.getIsPinned();
@@ -68,14 +71,26 @@ export function DataTable<TData extends object>
         columns,
         data,
         manualFiltering: true,
+        manualSorting: true,
         state: {
             columnFilters,
+            sorting
         },
         initialState: {
             columnPinning: pinnedColumns ?? {
                 start: [],
                 end: [],
             },
+        },
+
+        onSortingChange: (updater) => {
+            const nextSorting =
+                typeof updater === "function"
+                    ? updater(sorting)
+                    : updater;
+
+            setSorting(nextSorting);
+            onSortingChange?.(nextSorting);
         },
 
         onColumnFiltersChange: (updater) => {
