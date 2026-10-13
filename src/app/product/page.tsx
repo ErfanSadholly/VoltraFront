@@ -7,6 +7,7 @@ import { useProductGetAll } from "@/features/product/hooks/use-product-get-all";
 import { productColumns } from "@/features/product/components/product-columns";
 import { ProductAddDialog } from "@/features/product/components/product-add-dialog";
 import { ProductEditDialog } from "@/features/product/components/product-update-dialog";
+import { useProductDelete } from "@/features/product/hooks/use-product-delete";
 
 export default function ProductPage() {
     const [filters, setFilters] = useState<ColumnFiltersState>([]);
@@ -19,14 +20,27 @@ export default function ProductPage() {
     const sortBy = sorting[0]?.id;
     const desc = sorting[0]?.desc ?? false;
 
-    const { data, isError, isLoading, refetch } = useProductGetAll(filters, pageNo, pageSize, sortBy, desc);
+    const { data, isError, isLoading, refetch, isFetching } = useProductGetAll(filters, pageNo, pageSize, sortBy, desc);
+
+    const { mutate: deleteProduct } = useProductDelete();
 
     const columns = useMemo(
         () =>
-            productColumns((productId) => {
-                setSelectedProductId(productId);
-            }),
-        []
+            productColumns(
+                (productId) => {
+                    setSelectedProductId(productId);
+                },
+                (productId) => {
+                    deleteProduct(productId, {
+                        onSuccess: () => {
+                            if (data?.data.length === 1 && pageNo > 1) {
+                                setPageNo((current) => current - 1);
+                            }
+                        },
+                    });
+                },
+            ),
+        [deleteProduct, data?.data.length, pageNo]
     );
 
     return (
@@ -67,6 +81,7 @@ export default function ProductPage() {
                 isError={isError}
                 onRetry={refetch}
                 onSortingChange={setSorting}
+                isFetching={isFetching}
             />
         </div>
     );

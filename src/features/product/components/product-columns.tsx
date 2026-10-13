@@ -1,7 +1,7 @@
 "use client";
 
 import { createColumnHelper } from "@tanstack/react-table";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { MoreHorizontal, Pencil } from "lucide-react";
 import { tableFeaturesConfig } from "@/components/shared/data-table/table-features";
 import { TruncatedText } from "@/components/shared/TruncatedText";
 import { Button } from "@/components/ui/button";
@@ -15,18 +15,20 @@ import { ColumnDateSearch } from "@/components/shared/data-table/column-date-sea
 import { ColumnComboSearch } from "@/components/shared/data-table/column-combo-search";
 import { UserGetIdTitle } from "@/features/user/api/get-idTitle";
 import { DataTableColumnHeader } from "@/components/shared/data-table/data-table-column-header";
+import { DeleteAction } from "./product-delete-action";
 
 const columnHelper =
     createColumnHelper<typeof tableFeaturesConfig, ProductGetAllResponse>();
 
 export function productColumns(
-    onEdit: (productId: number) => void
+    onEdit: (productId: number) => void,
+    onDelete: (productId: number) => void,
 ) {
     return columnHelper.columns([
         columnHelper.accessor("name", {
             enableSorting: true,
             header: ({ column }) => (
-                <div className="flex items-center justify-center gap-1">
+                <div className="flex items-center justify-start  gap-1">
                     <DataTableColumnHeader
                         column={column}
                         title="نام محصول"
@@ -38,34 +40,32 @@ export function productColumns(
                     />
                 </div>
             ),
-            cell: ({ getValue }) => (
-                <div className="text-right">
-                    {getValue() ?? "-"}
-                </div>
-            ),
+            cell: ({ getValue }) => {
+                const productName = getValue();
+                return (
+                    <div className="text-right">
+                        <TruncatedText
+                            text={productName ?? "-"}
+                            title="نام محصول"
+                            maxLength={40}
+                        />
+                    </div>
+                )
+            },
         }),
 
         columnHelper.accessor("description", {
             header: () => (
-                <div className="text-center">
+                <div className="text-right">
                     توضیحات
                 </div>
             ),
             cell: ({ getValue }) => {
                 const description = getValue();
-
-                if (!description) {
-                    return (
-                        <div className="text-right">
-                            -
-                        </div>
-                    );
-                }
-
                 return (
                     <div className="text-right">
                         <TruncatedText
-                            text={description}
+                            text={description ?? "-"}
                             maxLength={80}
                         />
                     </div>
@@ -87,6 +87,7 @@ export function productColumns(
                         column={column}
                         placeholder="جستجوی برند..."
                         query={BrandGetIdTitle}
+                        queryKey={["brands", "id-title"]}
                     />
                 </div>
             ),
@@ -123,6 +124,7 @@ export function productColumns(
                         column={column}
                         placeholder="کاربر مورد نظر را انتخاب کنید"
                         query={UserGetIdTitle}
+                        queryKey={["brands", "id-title"]}
                     />
                 </div>
             ),
@@ -162,6 +164,7 @@ export function productColumns(
                         column={column}
                         placeholder="کاربر مورد نظر را انتخاب کنید"
                         query={UserGetIdTitle}
+                        queryKey={["brands", "id-title"]}
                     />
                 </div>
             ),
@@ -214,16 +217,10 @@ export function productColumns(
                         </span>
                     </Button>
 
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        title="حذف"
-                    >
-                        <Trash2 className="size-4" />
-                        <span className="sr-only">
-                            حذف
-                        </span>
-                    </Button>
+                    <DeleteAction
+                        productId={row.original.id}
+                        onDelete={onDelete}
+                    />
 
                     <DropdownMenu>
                         <DropdownMenuTrigger
