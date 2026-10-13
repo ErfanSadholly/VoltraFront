@@ -4,8 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
 import { updateSchema, ProductUpdateFormValues, } from "../validation/update-schema";
 import { ProductGetByIdResponse } from "../view-models/responses/product-getById-response";
-import { toast } from "sonner";
-import { ApiError } from "@/lib/api-error";
 import { FormLayout } from "@/components/shared/form/form-layout";
 import { FormInput } from "@/components/shared/form/form-input";
 import { FormCombobox } from "@/components/shared/form/form-combobox";
@@ -30,30 +28,25 @@ export function UpdateForm({ onSuccess, product }: ProductFormProps) {
         },
     });
 
-    const { isSubmitting, isDirty } = form.formState;
-    const { mutateAsync } = useProductUpdate();
+    const { isDirty } = form.formState;
+    const { mutate, isPending } = useProductUpdate();
 
-    async function onSubmit(values: ProductUpdateFormValues) {
-        try {
-            if (!isDirty) {
-                onSuccess();
-                return;
-            }
+    function onSubmit(values: ProductUpdateFormValues) {
 
-            await mutateAsync({
+        if (!isDirty) {
+            onSuccess();
+            return;
+        }
+
+        mutate(
+            {
                 productId: product.id,
                 values,
-            });
-            onSuccess();
-            toast.success("محصول با موفقیت ویرایش شد");
-        } catch (error) {
-            if (error instanceof ApiError) {
-                toast.error(error.message);
-                return;
+            },
+            {
+                onSuccess,
             }
-
-            toast.error("خطایی در ویرایش محصول رخ داد");
-        }
+        );
     }
 
     return (
@@ -70,6 +63,7 @@ export function UpdateForm({ onSuccess, product }: ProductFormProps) {
                         name="brandId"
                         label="برند"
                         query={BrandGetIdTitle}
+                        queryKey={["brands", "id-title"]}
                     />
 
                     <FormTextarea
@@ -80,8 +74,8 @@ export function UpdateForm({ onSuccess, product }: ProductFormProps) {
                 </FormLayout>
 
                 <div className="flex justify-start mt-4">
-                    <Button type="submit" disabled={isSubmitting}>
-                        {isSubmitting ? (
+                    <Button type="submit" disabled={isPending}>
+                        {isPending ? (
                             <>
                                 <Spinner data-icon="inline-start" />
                                 در حال ویرایش...

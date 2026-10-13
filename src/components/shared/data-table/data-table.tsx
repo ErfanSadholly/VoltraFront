@@ -8,7 +8,7 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription } from "@/components/ui/empty";
-import { AlertCircle, PackageOpen, RefreshCw } from "lucide-react";
+import { AlertCircle, Loader2, PackageOpen, RefreshCw } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 
@@ -27,6 +27,7 @@ type DataTableProps<TData extends object> = {
     isError?: boolean;
     onRetry?: () => void;
     onSortingChange?: (sorting: SortingState) => void;
+    isFetching?: boolean;
 };
 
 export function DataTable<TData extends object>
@@ -42,7 +43,8 @@ export function DataTable<TData extends object>
         isLoading,
         isError,
         onRetry,
-        onSortingChange }: DataTableProps<TData>) {
+        onSortingChange,
+        isFetching }: DataTableProps<TData>) {
     const [columnFilters, setColumnFilters] =
         useState<ColumnFiltersState>([]);
     const [sorting, setSorting] = useState<SortingState>([]);
@@ -106,6 +108,14 @@ export function DataTable<TData extends object>
 
     return (
         <div className="overflow-hidden rounded-md border">
+
+            {isFetching && !isLoading && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Loader2 className="size-4 animate-spin" />
+                    در حال به‌روزرسانی...
+                </div>
+            )}
+
             <Table dir="rtl">
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (

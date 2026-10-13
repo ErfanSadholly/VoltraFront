@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { Combobox as ComboboxPrimitive } from "@base-ui/react";
 import { ApiError } from "@/lib/api-error";
+import { useQuery, type QueryKey } from "@tanstack/react-query";
 
 type FormComboboxItem = {
     id: number;
@@ -19,32 +20,27 @@ type FormComboboxProps = {
     query: () => Promise<{
         data: FormComboboxItem[];
     }>;
+    queryKey: QueryKey;
 };
 
 export function FormCombobox({
     name,
     label,
     query,
+    queryKey
 }: FormComboboxProps) {
-    const [items, setItems] = useState<FormComboboxItem[]>([]);
-    const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        async function loadItems() {
-            try {
-                const response = await query();
-                setItems(response.data);
-            } catch (error) {
-                if (error instanceof ApiError) {
-                    setError(error.message);
-                } else {
-                    setError("خطا در دریافت اطلاعات");
-                }
-            }
-        }
-
-        loadItems();
-    }, [query]);
+    const {
+        data: items = [],
+        error,
+    } = useQuery({
+        queryKey,
+        queryFn: async () => {
+            const response = await query();
+            return response.data;
+        },
+        staleTime: 5 * 60 * 1000,
+    });
 
     const comboItems = useMemo(
         () =>
@@ -109,7 +105,9 @@ export function FormCombobox({
 
                         {error && (
                             <p className="text-sm text-destructive">
-                                {error}
+                                {error instanceof ApiError
+                                    ? error.message
+                                    : "خطا در دریافت اطلاعات"}
                             </p>
                         )}
                     </>

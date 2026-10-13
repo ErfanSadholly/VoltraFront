@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Combobox, ComboboxContent, ComboboxInput, ComboboxItem, ComboboxList, } from "@/components/ui/combobox";
 import { Popover, PopoverContent, PopoverTrigger, } from "@/components/ui/popover";
 import { ApiError } from "@/lib/api-error";
+import { useQuery, type QueryKey } from "@tanstack/react-query";
 
 type ColumnComboSearchItem = {
     id: number;
@@ -19,35 +20,29 @@ type ColumnComboSearchProps = {
     query: () => Promise<{
         data: ColumnComboSearchItem[];
     }>;
+    queryKey: QueryKey;
 };
 
 export function ColumnComboSearch({
     column,
     placeholder = "انتخاب کنید...",
     query,
+    queryKey
 }: ColumnComboSearchProps) {
-    const [items, setItems] = useState<ColumnComboSearchItem[]>([]);
-    const [error, setError] = useState<string | null>(null);
+
     const [open, setOpen] = useState(false);
 
-    useEffect(() => {
-        const loadQuery = query;
-
-        async function loadItems() {
-            try {
-                const response = await loadQuery();
-                setItems(response.data);
-            } catch (error) {
-                if (error instanceof ApiError) {
-                    setError(error.message);
-                } else {
-                    setError("خطا در دریافت اطلاعات");
-                }
-            }
-        }
-
-        loadItems();
-    }, [query]);
+    const {
+        data: items = [],
+        error,
+    } = useQuery({
+        queryKey,
+        queryFn: async () => {
+            const response = await query();
+            return response.data;
+        },
+        staleTime: 5 * 60 * 1000,
+    });
 
     const comboItems = useMemo(
         () =>
@@ -114,7 +109,9 @@ export function ColumnComboSearch({
 
                 {error && (
                     <p className="mt-2 text-sm text-destructive">
-                        {error}
+                        {error instanceof ApiError
+                            ? error.message
+                            : "خطا در دریافت اطلاعات"}
                     </p>
                 )}
             </PopoverContent>

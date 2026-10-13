@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import type { ColumnFiltersState } from "@tanstack/react-table";
 
 import { GetAll } from "../api/get-all";
@@ -24,5 +24,6 @@ export function useProductGetAll(
     return useQuery({
         queryKey: ["products", request],
         queryFn: () => GetAll(request),
+        placeholderData: keepPreviousData
     });
 }

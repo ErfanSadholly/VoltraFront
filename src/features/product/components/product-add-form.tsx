@@ -3,14 +3,12 @@
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createSchema, type ProductAddFormValues, } from "../validation/add-schema";
-import { ApiError } from "@/lib/api-error";
 import { BrandGetIdTitle } from "@/features/brand/api/get-idTitle";
 import { Button } from "@/components/ui/button";
 import { FormCombobox } from "@/components/shared/form/form-combobox";
 import { FormInput } from "@/components/shared/form/form-input";
 import { FormTextarea } from "@/components/shared/form/form-textarea";
 import { FormLayout } from "@/components/shared/form/form-layout";
-import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { useProductAdd } from "../hooks/use-product-add";
 
@@ -28,21 +26,13 @@ export function AddForm({ onSuccess }: ProductFormProps) {
         },
 
     });
-    const { isSubmitting } = form.formState;
-    const { mutateAsync } = useProductAdd();
 
-    async function onSubmit(values: ProductAddFormValues) {
-        try {
-            await mutateAsync(values);
-            onSuccess();
-            toast.success("محصول با موفقیت اضافه شد");
-        } catch (error) {
-            if (error instanceof ApiError) {
-                return toast.error(error.message);
-            }
-            
-            toast.error("خطایی در ثبت محصول رخ داد");
-        }
+    const { mutate, isPending } = useProductAdd();
+
+    function onSubmit(values: ProductAddFormValues) {
+        mutate(values, {
+            onSuccess: onSuccess
+        });
     }
 
     return (
@@ -60,6 +50,7 @@ export function AddForm({ onSuccess }: ProductFormProps) {
                         name="brandId"
                         label="برند"
                         query={BrandGetIdTitle}
+                        queryKey={["brands", "id-title"]}
                     />
 
                     <FormTextarea
@@ -71,8 +62,8 @@ export function AddForm({ onSuccess }: ProductFormProps) {
 
 
                 <div className="flex justify-start mt-4">
-                    <Button type="submit" disabled={isSubmitting}>
-                        {isSubmitting ? (
+                    <Button type="submit" disabled={isPending}>
+                        {isPending ? (
                             <>
                                 <Spinner data-icon="inline-start" />
                                 در حال ذخیره...

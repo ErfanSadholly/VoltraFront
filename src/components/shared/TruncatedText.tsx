@@ -1,20 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, } from "@/components/ui/dialog";
 
 type TruncatedTextProps = {
     text: string;
     maxLength?: number;
+    title?: string;
 };
 
 export function TruncatedText({
     text,
+    title = "توضیحات",
     maxLength = 80,
 }: TruncatedTextProps) {
     const [open, setOpen] = useState(false);
@@ -38,7 +35,7 @@ export function TruncatedText({
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle className="text-right">توضیحات</DialogTitle>
+                        <DialogTitle className="text-right">{title}</DialogTitle>
                     </DialogHeader>
 
                     <p className="whitespace-pre-wrap">
