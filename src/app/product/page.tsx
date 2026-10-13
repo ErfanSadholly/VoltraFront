@@ -8,6 +8,8 @@ import { productColumns } from "@/features/product/components/product-columns";
 import { ProductAddDialog } from "@/features/product/components/product-add-dialog";
 import { ProductEditDialog } from "@/features/product/components/product-update-dialog";
 import { useProductDelete } from "@/features/product/hooks/use-product-delete";
+import { UpdateActiveStatus } from "@/features/product/api/update-active-status";
+import { useProductUpdateActiveStatus } from "@/features/product/hooks/use-product-active-status";
 
 export default function ProductPage() {
     const [filters, setFilters] = useState<ColumnFiltersState>([]);
@@ -23,6 +25,7 @@ export default function ProductPage() {
     const { data, isError, isLoading, refetch, isFetching } = useProductGetAll(filters, pageNo, pageSize, sortBy, desc);
 
     const { mutate: deleteProduct } = useProductDelete();
+    const { mutate: updateActiveStatus } = useProductUpdateActiveStatus();
 
     const columns = useMemo(
         () =>
@@ -39,8 +42,9 @@ export default function ProductPage() {
                         },
                     });
                 },
+                (productId) => updateActiveStatus(productId)
             ),
-        [deleteProduct, data?.data.length, pageNo]
+        [deleteProduct, data?.data.length, pageNo, updateActiveStatus]
     );
 
     return (

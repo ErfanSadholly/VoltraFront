@@ -23,6 +23,7 @@ const columnHelper =
 export function productColumns(
     onEdit: (productId: number) => void,
     onDelete: (productId: number) => void,
+    updateActiveStatus: (productId: number) => void
 ) {
     return columnHelper.columns([
         columnHelper.accessor("name", {
@@ -108,9 +109,13 @@ export function productColumns(
                     />
                 </div>
             ),
-            cell: ({ getValue }) => (
+            cell: ({ getValue, row }) => (
                 <div className="flex justify-center">
-                    <Switch checked={getValue()} />
+                    <Switch
+                        checked={getValue()}
+                        onCheckedChange={() => updateActiveStatus(row.original.id)
+                        }
+                    />
                 </div>
             ),
         }),
