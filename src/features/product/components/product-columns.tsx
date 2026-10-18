@@ -22,7 +22,7 @@ const columnHelper =
 
 export function productColumns(
     onEdit: (productId: number) => void,
-    onDelete: (productId: number) => void,
+    onDelete: (productId: number, onSuccess: () => void) => void,
     updateActiveStatus: (productId: number) => void
 ) {
     return columnHelper.columns([

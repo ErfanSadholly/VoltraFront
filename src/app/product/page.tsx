@@ -8,7 +8,6 @@ import { productColumns } from "@/features/product/components/product-columns";
 import { ProductAddDialog } from "@/features/product/components/product-add-dialog";
 import { ProductEditDialog } from "@/features/product/components/product-update-dialog";
 import { useProductDelete } from "@/features/product/hooks/use-product-delete";
-import { UpdateActiveStatus } from "@/features/product/api/update-active-status";
 import { useProductUpdateActiveStatus } from "@/features/product/hooks/use-product-active-status";
 
 export default function ProductPage() {
@@ -16,26 +15,23 @@ export default function ProductPage() {
     const [pageNo, setPageNo] = useState(1);
     const [pageSize, setPageSize] = useState(25);
     const [sorting, setSorting] = useState<SortingState>([]);
-
-    const [selectedProductId, setSelectedProductId] =
-        useState<number | null>(null);
+    const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
     const sortBy = sorting[0]?.id;
     const desc = sorting[0]?.desc ?? false;
-
     const { data, isError, isLoading, refetch, isFetching } = useProductGetAll(filters, pageNo, pageSize, sortBy, desc);
-
     const { mutate: deleteProduct } = useProductDelete();
     const { mutate: updateActiveStatus } = useProductUpdateActiveStatus();
-
     const columns = useMemo(
         () =>
             productColumns(
                 (productId) => {
                     setSelectedProductId(productId);
                 },
-                (productId) => {
+                (productId, onSuccess) => {
                     deleteProduct(productId, {
                         onSuccess: () => {
+                            onSuccess();
+
                             if (data?.data.length === 1 && pageNo > 1) {
                                 setPageNo((current) => current - 1);
                             }

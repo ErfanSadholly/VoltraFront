@@ -1,18 +1,24 @@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import { useState } from "react";
 
 type DeleteActionProps = {
     productId: number;
-    onDelete: (productId: number) => void;
+    onDelete: (productId: number, onSuccess: () => void) => void;
 };
+
 
 export function DeleteAction({
     productId,
     onDelete,
 }: DeleteActionProps) {
+
+    const [open, setOpen] = useState(false);
+
+
     return (
-        <AlertDialog>
+        <AlertDialog open={open} onOpenChange={setOpen}>
             <AlertDialogTrigger
                 render={
                     <Button
@@ -37,12 +43,18 @@ export function DeleteAction({
                 <AlertDialogFooter>
                     <AlertDialogCancel>انصراف</AlertDialogCancel>
                     <AlertDialogAction
-                        onClick={() => onDelete(productId)}
+                        onClick={(event) => {
+                            event.preventDefault();
+
+                            onDelete(productId, () => {
+                                setOpen(false);
+                            });
+                        }}
                     >
                         حذف
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
-        </AlertDialog>
+        </AlertDialog >
     );
 }
